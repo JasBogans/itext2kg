@@ -91,9 +91,6 @@ class LangchainOutputParser:
         chain = prompt | self.model | parser
         try:
             return chain.invoke({"context": context, "query": IE_query})
-        # except openai.OpenAIError as e:
-        #     print(f"An error occurred: {e}")
-        #     return None
         except openai.BadRequestError as e:
             print(f"Too much requests, we are sleeping! \n the error is {e}")
             time.sleep(self.sleep_time)
@@ -107,3 +104,11 @@ class LangchainOutputParser:
         except OutputParserException:
             print(f"Error in parsing the instance {context}")
             pass
+        # except openai.OpenAIError as e:
+        #     print(f"An error occurred: {e}. Retrying after a short delay.")
+        #     time.sleep(self.sleep_time)
+        #     return self.extract_information_as_json_for_context(
+        #         output_data_structure=output_data_structure,
+        #         context=context,
+        #         IE_query=IE_query
+        #     )
