@@ -74,22 +74,26 @@ class LangchainOutputParser:
         # Set up a parser and inject instructions into the prompt template.
         parser = JsonOutputParser(pydantic_object=output_data_structure)
         
-        template = f"""
+        template = """
         Context: {context}
 
-        Question: {{query}}
-        Format_instructions : {{format_instructions}}
-        Answer: """
+        Question: {query}
+        Format_instructions: {format_instructions}
+        Answer:
+        """
 
         prompt = PromptTemplate(
             template=template,
-            input_variables=["query"],
+            input_variables=["context", "query"],
             partial_variables={"format_instructions": parser.get_format_instructions()},
         )
 
         chain = prompt | self.model | parser
         try:
-            return chain.invoke({"query": IE_query})
+            return chain.invoke({"context": context, "query": IE_query})
+        # except openai.OpenAIError as e:
+        #     print(f"An error occurred: {e}")
+        #     return None
         except openai.BadRequestError as e:
             print(f"Too much requests, we are sleeping! \n the error is {e}")
             time.sleep(self.sleep_time)
