@@ -4,7 +4,7 @@ from langchain.text_splitter import (
     TextSplitter
 )
 from langchain.schema import Document
-from langchain.output_parsers import JsonOutputParser
+from langchain_core.output_parsers import JsonOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.exceptions import OutputParserException
