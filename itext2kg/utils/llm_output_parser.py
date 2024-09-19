@@ -104,17 +104,31 @@ class LangchainOutputParser:
             text (str): The text to split.
 
         Returns:
-            List[str]: A list of text chunks.
+            List[str]: A list of text chunks as strings.
         """
         documents = self.text_splitter.split_text(text)
         split_chunks = []
         for doc in documents:
-            # Further split chunks that exceed the model's token limit
-            if self.estimate_tokens(doc) > 3500:
-                further_chunks = self.recursive_splitter.split_text(doc)
-                split_chunks.extend(further_chunks)
+            # Extract content based on the type of splitter output
+            if isinstance(doc, Document):
+                content = doc.page_content
+            elif isinstance(doc, str):
+                content = doc
             else:
-                split_chunks.append(doc)
+                raise TypeError(f"Unexpected type {type(doc)} returned by text_splitter.split_text")
+
+            # Further split chunks that exceed the model's token limit
+            if self.estimate_tokens(content) > 3500:
+                further_chunks = self.recursive_splitter.split_text(content)
+                for fc in further_chunks:
+                    if isinstance(fc, Document):
+                        split_chunks.append(fc.page_content)
+                    elif isinstance(fc, str):
+                        split_chunks.append(fc)
+                    else:
+                        raise TypeError(f"Unexpected type {type(fc)} returned by recursive_splitter.split_text")
+            else:
+                split_chunks.append(content)
         return split_chunks
 
     def combine_results(self, results: List[dict]) -> dict:
