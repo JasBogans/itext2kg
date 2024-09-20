@@ -47,23 +47,22 @@ class Article(BaseModel):
 # ---------------- Entities & Relationships Extraction --------------------------- #
 
 class Property(BaseModel):
-    name : str = Field("The name of the entity. An entity should encode ONE concept.")
-    
+    name: str = Field(..., description="The name of the entity. An entity should encode ONE concept.")
+
 class Entity(BaseModel):
-    label : str = Field("The type or category of the entity, such as 'Process', 'Technique', 'Data Structure', 'Methodology', 'Person', etc. This field helps in classifying and organizing entities within the knowledge graph.")
-    name : str = Field("The specific name of the entity. It should represent a single, distinct concept and must not be an empty string. For example, if the entity is a 'Technique', the name could be 'Neural Networks'.")
-    
+    label: str = Field(..., description="The type or category of the entity, such as 'Process', 'Technique', 'Data Structure', 'Methodology', 'Person', etc. This field helps in classifying and organizing entities within the knowledge graph.")
+    name: str = Field(..., description="The specific name of the entity. It should represent a single, distinct concept and must not be an empty string. For example, if the entity is a 'Technique', the name could be 'Neural Networks'.")
+
 class EntitiesExtractor(BaseModel):
-    entities : List[Entity] = Field("All the entities presented in the context. The entities should encode ONE concept.")
-    
+    entities: List[Entity] = Field(..., description="All the entities presented in the context. The entities should encode ONE concept.")
+
 class Relationship(BaseModel):
-    startNode: str = Field("The starting entity, which is present in the entities list.")
-    endNode: str = Field("The ending entity, which is present in the entities list.")
-    name: str = Field("The predicate that defines the relationship between the two entities. This predicate should represent a single, semantically distinct relation.")
+    startNode: str = Field(..., description="The starting entity, which is present in the entities list.")
+    endNode: str = Field(..., description="The ending entity, which is present in the entities list.")
+    name: str = Field(..., description="The predicate that defines the relationship between the two entities. This predicate should represent a single, semantically distinct relation.")
 
 class RelationshipsExtractor(BaseModel):
-    relationships: List[Relationship] = Field("Based on the provided entities and context, identify the predicates that define relationships between these entities. The predicates should be chosen with precision to accurately reflect the expressed relationships.")
-    
+    relationships: List[Relationship] = Field(..., description="Based on the provided entities and context, identify the predicates that define relationships between these entities. The predicates should be chosen with precision to accurately reflect the expressed relationships.")
     
 # ---------------------------- CV ------------------------------------- #
 
