@@ -33,7 +33,8 @@ class LangchainOutputParser:
         Args:
             llm_model (ChatOpenAI): The language model instance.
             embeddings_model (Optional[OpenAIEmbeddings]): The embeddings model instance.
-            text_splitter (Optional[TextSplitter]): The text splitter instance from LangChain. Defaults to MarkdownHeaderTextSplitter.
+            text_splitter (Optional[TextSplitter]): The text splitter instance from LangChain. 
+                If None, defaults to RecursiveCharacterTextSplitter.
             sleep_time (int): Time to wait (in seconds) when encountering rate limits or errors.
             max_retries (int): Maximum number of retry attempts for handling errors.
             model_name (str): The model name for accurate token counting.
@@ -44,18 +45,14 @@ class LangchainOutputParser:
         self.max_retries = max_retries
         self.model_name = model_name
 
-        # Initialize the text splitter; default to MarkdownHeaderTextSplitter if not provided
+        # Initialize the text splitter; default to RecursiveCharacterTextSplitter if not provided
         if text_splitter is not None:
             self.text_splitter = text_splitter
-        # else:
-        #     self.text_splitter = MarkdownHeaderTextSplitter(
-        #         headers_to_split_on=[
-        #             ("#", "Header 1"),
-        #             ("##", "Header 2"),
-        #             ("###", "Header 3"),
-        #         ],
-        #         strip_headers=False  # Set to True to exclude headers from chunk content
-        #     )
+        else:
+            self.text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200
+            )
             
         # Initialize RecursiveCharacterTextSplitter for further splitting within chunks if necessary
         self.recursive_splitter = RecursiveCharacterTextSplitter(

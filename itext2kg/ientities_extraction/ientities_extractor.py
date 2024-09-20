@@ -1,22 +1,28 @@
 from ..utils import LangchainOutputParser, EntitiesExtractor, DataHandler
+from langchain.text_splitter import (
+    TextSplitter
+)
 
-class iEntitiesExtractor():
+class iEntitiesExtractor:
     """
     A class to extract entities from text using natural language processing tools and embeddings.
     """
-    def __init__(self, llm_model, embeddings_model, sleep_time:int=5) -> None:        
+    def __init__(self, llm_model, embeddings_model, text_splitter: TextSplitter, sleep_time: int = 5) -> None:
         """
-        Initializes the iEntitiesExtractor with specified language model, embeddings model, and operational parameters.
+        Initializes the iEntitiesExtractor with specified language model, embeddings model, text splitter, and operational parameters.
         
         Args:
-        llm_model: The language model instance to be used for extracting entities from text.
-        embeddings_model: The embeddings model instance to be used for generating vector representations of text entities.
-        sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
+            llm_model: The language model instance to be used for extracting entities from text.
+            embeddings_model: The embeddings model instance to be used for generating vector representations of text entities.
+            text_splitter (TextSplitter): The text splitter instance from LangChain.
+            sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
         """
-    
-        self.langchain_output_parser =  LangchainOutputParser(llm_model=llm_model,
-                                                              embeddings_model=embeddings_model,
-                                                       sleep_time=sleep_time)  
+        self.langchain_output_parser = LangchainOutputParser(
+            llm_model=llm_model,
+            embeddings_model=embeddings_model,
+            text_splitter=text_splitter,
+            sleep_time=sleep_time
+        )
         self.data_handler = DataHandler()
  
     

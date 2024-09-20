@@ -3,32 +3,47 @@ from typing import List, Tuple
 from ..ientities_extraction import iEntitiesExtractor
 from ..irelations_extraction import iRelationsExtractor
 from ..utils import Matcher, DataHandler, LangchainOutputParser
+from langchain.text_splitter import (
+    TextSplitter
+)
 
 class iText2KG:
     """
     A class designed to extract knowledge from text and structure it into a knowledge graph using
     entity and relationship extraction powered by language models.
     """
-    def __init__(self, llm_model, embeddings_model, sleep_time:int=5) -> None:        
+    def __init__(self, llm_model, embeddings_model, text_splitter: TextSplitter, sleep_time: int = 5) -> None:
         """
-        Initializes the iText2KG with specified language model, embeddings model, and operational parameters.
+        Initializes the iText2KG with specified language model, embeddings model, text splitter, and operational parameters.
         
         Args:
-        llm_model: The language model instance to be used for extracting entities and relationships from text.
-        embeddings_model: The embeddings model instance to be used for creating vector representations of extracted entities.
-        sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
+            llm_model: The language model instance to be used for extracting entities and relationships from text.
+            embeddings_model: The embeddings model instance to be used for creating vector representations of extracted entities.
+            text_splitter (TextSplitter): The text splitter instance from LangChain.
+            sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
         """
-        self.ientities_extractor =  iEntitiesExtractor(llm_model=llm_model, 
-                                                       embeddings_model=embeddings_model,
-                                                       sleep_time=sleep_time) 
+        self.ientities_extractor = iEntitiesExtractor(
+            llm_model=llm_model, 
+            embeddings_model=embeddings_model,
+            text_splitter=text_splitter,
+            sleep_time=sleep_time
+        )
         
-        self.irelations_extractor = iRelationsExtractor(llm_model=llm_model, 
-                                                        embeddings_model=embeddings_model,
-                                                        sleep_time=sleep_time)
+        self.irelations_extractor = iRelationsExtractor(
+            llm_model=llm_model, 
+            embeddings_model=embeddings_model,
+            text_splitter=text_splitter,
+            sleep_time=sleep_time
+        )
 
         self.data_handler = DataHandler()
         self.matcher = Matcher()
-        self.langchain_output_parser = LangchainOutputParser(llm_model=llm_model, embeddings_model=embeddings_model)
+        self.langchain_output_parser = LangchainOutputParser(
+            llm_model=llm_model, 
+            embeddings_model=embeddings_model,
+            text_splitter=text_splitter,
+            sleep_time=sleep_time
+        )
         
         
     def extract_entities_for_all_sections(self, sections:List[str], ent_threshold = 0.8):

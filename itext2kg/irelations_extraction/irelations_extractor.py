@@ -1,23 +1,29 @@
 from typing import List
 from ..utils import LangchainOutputParser, RelationshipsExtractor, DataHandler
+from langchain.text_splitter import (
+    TextSplitter
+)
 
 class iRelationsExtractor:
     """
     A class to extract relationships between entities
     """
-    def __init__(self, llm_model, embeddings_model, sleep_time:int=5) -> None:        
+    def __init__(self, llm_model, embeddings_model, text_splitter: TextSplitter, sleep_time: int = 5) -> None:
         """
-        Initializes the iRelationsExtractor with specified language model, embeddings model, and operational parameters.
+        Initializes the iRelationsExtractor with specified language model, embeddings model, text splitter, and operational parameters.
         
         Args:
-        llm_model: The language model instance used for extracting relationships between entities.
-        embeddings_model: The embeddings model instance used for generating vector representations of entities and relationships.
-        sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
+            llm_model: The language model instance used for extracting relationships between entities.
+            embeddings_model: The embeddings model instance used for generating vector representations of entities and relationships.
+            text_splitter (TextSplitter): The text splitter instance from LangChain.
+            sleep_time (int): The time to wait (in seconds) when encountering rate limits or errors. Defaults to 5 seconds.
         """
-        self.langchain_output_parser =  LangchainOutputParser(llm_model=llm_model,
-                                                              embeddings_model=embeddings_model,
-                                                       sleep_time=sleep_time)  
-        
+        self.langchain_output_parser = LangchainOutputParser(
+            llm_model=llm_model,
+            embeddings_model=embeddings_model,
+            text_splitter=text_splitter,
+            sleep_time=sleep_time
+        )
         self.data_handler = DataHandler()
     
     
